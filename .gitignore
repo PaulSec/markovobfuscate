@@ -1,3 +1,7 @@
+# Data sets don't need to be public
+datasets/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
