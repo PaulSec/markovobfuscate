@@ -276,7 +276,7 @@ if __name__ == "__main__":
     split_regex = r'\.'
 
     # File/book to read for training the Markov model (will be read into memory)
-    training_file = "98.txt"
+    training_file = "../datasets/98.txt"
 
     # Obfuscating Markov engine
     m = MarkovKeyState()
