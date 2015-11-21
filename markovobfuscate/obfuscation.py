@@ -2,6 +2,7 @@ __author__ = 'bwall'
 import re
 import operator
 import random
+import logging
 
 
 # Exception to throw if the algorithm breaks like a condom on prom night
@@ -96,6 +97,7 @@ class MarkovKeyState:
         if len(self.raw_scores[last].items()) < 256:
             # It is feasible to fail to find a valid result, generally we just need to try again though
             try_again = True
+            attempts = 0
             while try_again:
                 try:
                     # We start with last in our word list since we care about the transition between words, not words
@@ -127,7 +129,8 @@ class MarkovKeyState:
 
                             # Pick a random word that does not result in us going over our remaining value
                             if upper_bound < 2:
-                                index = 0
+                                # hah, this was a silly bug
+                                index = upper_bound
                             else:
                                 index = random.randint(0, upper_bound)
 
@@ -154,6 +157,15 @@ class MarkovKeyState:
                             break
                 except AlgorithmFailException:
                     try_again = True
+                    attempts += 1
+                    if attempts > 1024:
+                        # shit...
+                        logging.info("Algorithm failure resistance is failing...rage")
+                        logging.info("words_to_use: {0}".format(words_to_use))
+                        logging.info("remaining_value: {0}".format(remaining_value))
+                        logging.info("last: {0}".format(last))
+                        logging.info("byte_value: {0}".format(byte_value))
+                        logging.info("current_list: {0}".format(current_list))
         else:
             # w00t, we can use a short value!
             words.append(sorted(self.raw_scores[last].items(), key=operator.itemgetter(1))[::-1][byte_value][0])
@@ -272,6 +284,8 @@ class MarkovKeyState:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+
     # Regular expression to split our training files on
     split_regex = r'\.'
 
@@ -287,6 +301,19 @@ if __name__ == "__main__":
 
     # Split learning data into sentences, in this case, based on periods.
     map(m.learn_sentence, re.split(split_regex, text))
+
+    # Begin automated tests ######
+
+    for i in xrange(20):
+        # Run a random test
+        rand_string = "".join([chr(random.randint(0, 255)) for k in xrange(1024)])
+        if rand_string != m.deobfuscate_string(m.obfuscate_string(rand_string)):
+            raise AlgorithmFailException()
+
+    # Proved to cause an infinite failure prefix
+    m.create_byte("ruinating", 217)
+
+    # End automated tests ######
 
     # Our data to obfuscate
     test_string = "This is a test message to prove the concept."
