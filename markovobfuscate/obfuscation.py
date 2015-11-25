@@ -94,6 +94,12 @@ class MarkovKeyState:
         """
         words = []
         # Do we need to use a long value or can we use a short value
+
+        print last
+        print byte_value
+        print chr(byte_value)
+        print self.raw_scores 
+        #raw_input()
         if len(self.raw_scores[last].items()) < 256:
             # It is feasible to fail to find a valid result, generally we just need to try again though
             try_again = True
@@ -183,7 +189,7 @@ class MarkovKeyState:
         parts = map(ord, list(s))
 
         # Start off with a random first word (word following --terminate--)
-        result = self.create_byte("--terminate--", random.randint(0, 256))
+        result = self.create_byte("--terminate--", 41)
         last = result[-1]
 
         for x in parts:
@@ -280,6 +286,7 @@ class MarkovKeyState:
             result.append(sum(running_values))
 
         # Join the ints together as chrs, to live in harmony forevaaaa
+
         return "".join(map(chr, result))
 
 
@@ -290,7 +297,7 @@ if __name__ == "__main__":
     split_regex = r'\.'
 
     # File/book to read for training the Markov model (will be read into memory)
-    training_file = "../datasets/98.txt"
+    training_file = "./lyrics.txt"
 
     # Obfuscating Markov engine
     m = MarkovKeyState()
@@ -304,14 +311,14 @@ if __name__ == "__main__":
 
     # Begin automated tests ######
 
-    for i in xrange(20):
-        # Run a random test
-        rand_string = "".join([chr(random.randint(0, 255)) for k in xrange(1024)])
-        if rand_string != m.deobfuscate_string(m.obfuscate_string(rand_string)):
-            raise AlgorithmFailException()
+#    for i in xrange(20):
+ #       # Run a random test
+  #      rand_string = "".join([chr(random.randint(0, 255)) for k in xrange(1024)])
+   #     if rand_string != m.deobfuscate_string(m.obfuscate_string(rand_string)):
+    #        raise AlgorithmFailException()
 
     # Proved to cause an infinite failure prefix
-    m.create_byte("ruinating", 217)
+    #m.create_byte("ruinating", 217)
 
     # End automated tests ######
 
@@ -330,4 +337,4 @@ if __name__ == "__main__":
     map(m2.learn_sentence, re.split(split_regex, text))
 
     # Print out the deobfuscated string
-    print "Deobfuscated string: {0}".format(m2.deobfuscate_string(s))
+    print "Deobfuscated string: {0}".format(m2.deobfuscate_string(s)[1:])
