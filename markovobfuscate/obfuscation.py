@@ -189,7 +189,7 @@ class MarkovKeyState:
         parts = map(ord, list(s))
 
         # Start off with a random first word (word following --terminate--)
-        result = self.create_byte("--terminate--", 41)
+        result = self.create_byte("--terminate--", random.randint(33, 126))
         last = result[-1]
 
         for x in parts:
