@@ -323,7 +323,7 @@ if __name__ == "__main__":
     # End automated tests ######
 
     # Our data to obfuscate
-    test_string = "This is a test message to prove the concept."
+    test_string = "dGhpcyBpcyBhIGNyYXp5IG1lc3NhZ2UK"
     print "Original string: {0}".format(test_string)
 
     # Obfuscate the data
