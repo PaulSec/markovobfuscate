@@ -1,4 +1,4 @@
-from obfuscation import *
+from markovobfuscate.obfuscation import *
 import logging
 import re
 
@@ -6,7 +6,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
 
     # Obfuscating Markov engine
-    m = MarkovKeyState("./lyrics.txt")
+    m = MarkovKeyState("./data/lyrics.txt")
 
     # Our data to obfuscate
     test_string = "dGhpcyBpcyBhIGNyYXp5IG1lc3NhZ2UK"
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     print "Obfuscated string: {0}".format(s)
 
     # Other Markov engine
-    m2 = MarkovKeyState("./lyrics.txt")
+    m2 = MarkovKeyState("./data/lyrics.txt")
 
     # Print out the deobfuscated string
     print "Deobfuscated string: {0}".format(m2.deobfuscate_string(s)[1:])
